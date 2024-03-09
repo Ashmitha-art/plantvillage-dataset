@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
 
 # Function to extract color histogram features from images
 def extract_color_histogram(image):
-    print("hello")
     # Convert the image to HSV color space
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -46,11 +46,12 @@ for folder in [colored_folder, grayscale_folder, segmented_folder]:
                     labels.append(folder.split('/')[-1])  # Assuming folder structure is consistent
                 else:
                     print("Failed to load image:", image_path)
+                    
 # Convert lists to numpy arrays
 features = np.array(features)
 labels = np.array(labels)
-print("hello")
 
+#Random Forest Algorithm
 # Split the data into training and testing sets (90-10 split)
 X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.1, random_state=42)
 
@@ -65,5 +66,21 @@ y_pred = rf_classifier.predict(X_test)
 
 # Calculate the accuracy of the classifier
 accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy:", accuracy)
-print("hello")
+print("Accuracy of Random Forest:", accuracy)
+
+#Support Vector Machine Algorithm
+# Split the data into training and testing sets (90-10 split)
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.1, random_state=42)
+
+# Initialize the Support Vector Machine classifier
+svm_classifier = SVC()
+
+# Train the classifier on the training data
+svm_classifier.fit(X_train, y_train)
+
+# Predict the labels for the test set
+y_pred = svm_classifier.predict(X_test)
+
+# Calculate the accuracy of the classifier
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy of Support Vector Machine:", accuracy)
