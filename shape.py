@@ -9,8 +9,12 @@ from sklearn.metrics import accuracy_score
 
 
 def extractShape(image):
+    if len(image.shape) == 3:
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray_image=image
     #calculate Moments
-    moments = cv2.moments(image)
+    moments = cv2.moments(gray_image)
     #calculate Hu Moments
     huMoments = cv2.HuMoments(moments)
     # convert huMoments to logarithmic scale for easier comparision 
@@ -27,18 +31,19 @@ labels = []
 
 # Iterate only through the grayscale folder
 for subfolder in os.listdir(grayscale_folder):
-    folder_path = os.path.join(grayscale_folder, subfolder)
-    if os.path.isdir(folder_path):
-        for image_file in os.listdir(folder_path):
-            image_path = os.path.join(grayscale_folder, subfolder, image_file)
-            image = cv2.imread(image_path)
-            if image is not None:
-                # Extract features
+    if subfolder.startswith('Tomato') or subfolder.startswith('tomato'):
+        folder_path = os.path.join(grayscale_folder, subfolder)
+        if os.path.isdir(folder_path):
+            for image_file in os.listdir(folder_path):
+                image_path = os.path.join(folder_path, image_file)
+                image = cv2.imread(image_path)
+                if image is None:  # If the image couldn't be loaded
+                    print(f"Failed to load image: {image_path}. Skipping...")
+                    continue  # Skip the rest of the code in this loop iteration and proceed with the next image
+                # If the image is loaded successfully, proceed with processing
                 hu_moments = extractShape(image)
                 features.append(hu_moments)
-                labels.append(subfolder)  # Using the subfolder name as the label
-            else:
-                print("Failed to load image:", image_path)
+                labels.append(subfolder)
 
 features = np.array(features)
 labels = np.array(labels)
