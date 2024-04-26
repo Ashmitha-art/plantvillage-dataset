@@ -56,5 +56,4 @@ y_pred = logreg.predict(X_test)
 
 # Calculate and print the accuracy of the model
 accuracy = accuracy_score(y_test, y_pred)
-print(
-    f"Accuracy of logistic regression model with Haralick features: {accuracy}")
+print( f"Accuracy of logistic regression model with Haralick features: {accuracy}")
